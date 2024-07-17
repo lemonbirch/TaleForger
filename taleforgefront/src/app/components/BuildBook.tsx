@@ -1,11 +1,16 @@
+// src/app/components/BuildBook.tsx
+
 'use client'
-import React, { useState } from 'react'
-import InputText from '../components/InputText'
-import DropDown from '../components/Dropdown'
+import React, { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
+import InputText from './InputText'
+import DropDown from './Dropdown'
 import { sendFormData } from '../utils/api'
 import { FormData } from '../types/StoryBuilder'
+import LoadingSpinner from './LoadingSpinner'
 
-const StoryBuilder: React.FC = () => {
+const BuildBook: React.FC = () => {
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [formData, setFormData] = useState<FormData>({
     characterName: '',
@@ -15,6 +20,12 @@ const StoryBuilder: React.FC = () => {
     pages: '',
     artStyle: '',
   })
+  const [isLoading, setIsLoading] = useState(false)
+  const [router, setRouter] = useState(null)
+
+  useEffect(() => {
+    setRouter(useRouter())
+  }, [])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target
@@ -27,11 +38,18 @@ const StoryBuilder: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setIsLoading(true)
     try {
-      await sendFormData(formData)
-      console.log('Form data submitted successfully!' + JSON.stringify(formData))
+      const response = await sendFormData(formData)
+      console.log('Form data submitted successfully!')
+      router.push({
+        pathname: '/book-page',
+        query: { bookData: JSON.stringify(response) }
+      })
     } catch (error) {
       console.error('Error submitting form data:', error)
+      setIsLoading(false)
+      // Show error message to user
     }
   }
 
@@ -60,7 +78,9 @@ const StoryBuilder: React.FC = () => {
           />
           
           <div className="flex flex-col items-center gap-4">
-            <button type="submit" className="btn btn-primary w-full">Create a Story</button>
+            <button type="submit" className="btn btn-primary w-full" disabled={isLoading}>
+              {isLoading ? 'Creating Story...' : 'Create a Story'}
+            </button>
             <button 
               type="button" 
               className="btn btn-secondary w-full"
@@ -69,6 +89,8 @@ const StoryBuilder: React.FC = () => {
               {showAdvanced ? 'Hide Advanced Options' : 'Advanced Options'}
             </button>
           </div>
+
+          {isLoading && <LoadingSpinner />}
 
           {showAdvanced && (
             <div className="mt-6 bg-teal-700 rounded-lg p-4">
@@ -111,4 +133,5 @@ const StoryBuilder: React.FC = () => {
   )
 }
 
-export default StoryBuilder
+// Use dynamic import to ensure the component is only rendered on the client side
+export default dynamic(() => Promise.resolve(BuildBook), { ssr: false })
