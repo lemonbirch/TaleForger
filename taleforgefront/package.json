@@ -16,6 +16,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-pageflip": "^2.0.3",
+    "react-router-dom": "^6.25.1",
     "react-spring": "^9.7.3",
     "sass": "^1.77.8",
     "scroll-lock": "^2.1.5"

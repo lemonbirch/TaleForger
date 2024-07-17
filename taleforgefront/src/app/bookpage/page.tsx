@@ -2,7 +2,7 @@
 import React from 'react';
 import SquareButton from '../components/SqaureButton';
 import ChoiceCard from './choiceCard';
-import RenderDataPage from '../components/RenderDataPage';
+import RenderDataPage from './RenderDataPage';
 
 const BookPage = () => {
   return (
