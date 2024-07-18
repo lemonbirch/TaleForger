@@ -4,11 +4,12 @@ import React, { useState } from 'react';
 import InputText from '../components/InputText';
 import DropDown from '../components/Dropdown';
 import { sendFormData } from '../utils/api';
-import { RenderData } from '../types/renderData'
+import { FormData } from '../types/StoryBuilder';
 import RenderDataPage from '../bookpage/RenderDataPage';
 import SquareButton from '../components/SqaureButton';
-import axios from 'axios';
 import ChoiceCard from '../bookpage/choiceCard';
+import axios from 'axios';
+import { RenderData } from '../types/renderData';
 
 const StoryBuilder: React.FC = () => {
   const [showAdvanced, setShowAdvanced] = useState(false);

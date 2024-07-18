@@ -1,8 +1,7 @@
 // src/bookpage/RenderDataPage.tsx
-import React from 'react';
-import { FormData } from '../types/StoryBuilder'
 
-import { RenderData } from '../types/renderData'; // Adjust the import path as needed
+import React from 'react';
+import { RenderData } from '../types/renderData';  // Adjust the import path as needed
 
 interface RenderDataPageProps {
   renderData: RenderData | null;
@@ -26,9 +25,7 @@ const RenderDataPage: React.FC<RenderDataPageProps> = ({ renderData }) => {
                 {renderData && (
                   <div>
                     <p>{renderData.story}</p>
-                    <p>{renderData.choice1}</p>
-                    <p>{renderData.choice2}</p>
-                    <p>{renderData.choice3}</p>
+                  
                     <img src={renderData.imageURL} alt="Story" />
                   </div>
                 )}
