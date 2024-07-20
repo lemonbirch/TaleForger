@@ -79,7 +79,8 @@ async function generateAndSaveImage(content) {
   const createImagePrompt = storyModule.createImagePrompt(content, artstyle);
   const imagePrompt = await generateContent(createImagePrompt);
   console.log("this is the image prompt" + imagePrompt);
-  const imageURL = await generateImage(imagePrompt);
+  const imageURL = "https://oaidalleapiprodscus.blob.core.windows.net/private/org-wu5GqWI8J6SGzX7Vz6q7H81Z/user-WcbDz9fVXoEqb6nusJxTAS7O/img-BJau26krbbyhbQ2csBgg7e5Q.png?st=2024-07-20T03%3A06%3A48Z&se=2024-07-20T05%3A06%3A48Z&sp=r&sv=2023-11-03&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-07-19T23%3A14%3A36Z&ske=2024-07-20T23%3A14%3A36Z&sks=b&skv=2023-11-03&sig=nJ10IKuGgOrf23f%2BdE4bYjTUCBTzuOgoODR%2BrrfNwEE%3D"
+  // await generateImage(imagePrompt);
   const imageName = `image_${Date.now()}.png`;
 
   try {

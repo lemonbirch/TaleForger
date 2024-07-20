@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 
-const choiceCard = () => {
+const ChoiceCard = () => {
 function handleClick(value: string) {
         console.log(value + 'clicked');
     }
@@ -25,4 +25,4 @@ function handleClick(value: string) {
   )
 }
 
-export default choiceCard
+export default ChoiceCard
