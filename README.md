@@ -34,20 +34,7 @@ Copynpm run dev
 or with yarn:
 Copyyarn dev
 This will start the development server. Open http://localhost:3000 in your browser to view the application.
-Project Structure
-Copytaleforge/
-├── app/
-│   ├── components/
-│   │   ├── Navbar/
-│   │   └── ...
-│   ├── globals.css
-│   ├── layout.tsx
-│   └── page.tsx
-├── public/
-├── styles/
-├── next.config.js
-├── package.json
-└── tsconfig.json
+
 
 app/: Contains the main application code
 components/: Reusable React components
