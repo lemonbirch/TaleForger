@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+TaleForge
+TaleForge is an interactive storybook website where users' choices affect the progression of the story. It's built with Next.js and TypeScript, providing a dynamic and engaging experience for young readers.
+Features
 
-## Getting Started
+Interactive storytelling with user choices
+Dynamic image generation for each page
+Responsive design for various devices
+Custom fonts for a child-friendly interface
 
-First, run the development server:
+Prerequisites
+Before you begin, ensure you have met the following requirements:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Node.js (v14 or later)
+npm or yarn package manager
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Installation
+To install TaleForge, follow these steps:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Clone the repository:
+Copygit clone https://github.com/yourusername/taleforge.git
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Navigate to the project directory:
+Copycd taleforge
 
-## Learn More
+Install the dependencies:
+Copynpm install
+or if you're using yarn:
+Copyyarn install
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Usage
+To run TaleForge locally, use the following command:
+Copynpm run dev
+or with yarn:
+Copyyarn dev
+This will start the development server. Open http://localhost:3000 in your browser to view the application.
+Project Structure
+Copytaleforge/
+├── app/
+│   ├── components/
+│   │   ├── Navbar/
+│   │   └── ...
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx
+├── public/
+├── styles/
+├── next.config.js
+├── package.json
+└── tsconfig.json
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+app/: Contains the main application code
+components/: Reusable React components
+globals.css: Global styles
+layout.tsx: Root layout component
+page.tsx: Main page component
+public/: Static assets
+styles/: Additional style files
+next.config.js: Next.js configuration
+package.json: Project dependencies and scripts
+tsconfig.json: TypeScript configuration
 
-## Deploy on Vercel
+Contributing
+Contributions to TaleForge are welcome. Please follow these steps to contribute:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Fork the repository
+Create a new branch: git checkout -b feature-branch-name
+Make your changes and commit them: git commit -m 'Add some feature'
+Push to the branch: git push origin feature-branch-name
+Create a pull request
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+License
+This project is licensed under the MIT License.

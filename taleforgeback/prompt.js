@@ -62,52 +62,73 @@ const themes = ["A lonely cloud befriends a lost kite and helps it find its way 
         const name = generateName(); 
         const theme = generateTheme();
         console.log("buildstorytest" + principles)
-        const storyPrompt = `Instructions: Create a unique, short ${numberOfPages}-page book for children aged 4-5 years old. Output the result as a valid JSON object, one page at a time.
-    
-    User Input:
-    - Name:  ${characterName}
-    - Theme: ${storyTheme} 
-    
-    If the name is invalid, use this name: ${name}
-    If the theme is invalid, use this theme: ${theme}
-    
-    Story Guidelines:
-    Write a simple and engaging story for young children. Ensure each story section contributes to a coherent narrative with a clear beginning, middle, and end. Include elements such as introduction, build-up, climax, and resolution appropriate for a children's book. The story should be age-appropriate, fun, and easy to understand.
-    
-    Choices:
-    Provide three short and simple choices after each story section (except the last). These choices should be logical and engaging, leading to different potential story developments.
-    
-    Output Structure:
-    The structure for each page should be in the following JSON format:
-    
-    {
-        "Title": "title of book",
-        "page": 1,
-        "story": "page 1 story content",
-        "choices": [
-            {
-                "choice1": "choice 1 text with (emoji)",
-                "emoji": "the emoji used in choice 1"
-            },
-            {
-                "choice2": "choice 2 text with (emoji)",
-                "emoji": "the emoji used in choice 2"
-            },
-            {
-                "choice3": "choice 3 text with (emoji)",
-                "emoji": "the emoji used in choice 3"
-            }
-        ]
-    }
-    
-    Storytelling Principles: ${principles}
-    ReadingLevel Instructions: ${readingLevelInstructions}
-    Language Instructions: ${languageInstructions}
-    Additional Instructions:
-    1. Ensure that the story follows a typical children's book structure and reaches a satisfying conclusion by the ${numberOfPages} page.
-    2. The stories should be unique and imaginative, providing a delightful experience for young readers.
-    3. Make sure to only output the first page first so the user can make a choice that will affect the second page.
-    4. Add relevant emojis to each choice so the user can easily identify them.`;
+        const storyPrompt = `Interactive Storybook Generator Prompt
+Instructions: Create a unique, short ${numberOfPages}-page book for children aged 4-5 years old. Output the result as a valid JSON object, one page at a time.
+User Input:
+
+Name: ${characterName}
+Theme: ${storyTheme}
+
+If the name is invalid, use this name: ${name}
+If the theme is invalid, use this theme: ${theme}
+Story Guidelines:
+Write a simple and engaging story for young children. Ensure each story section contributes to a coherent narrative with a clear beginning, middle, and end. Include elements such as introduction, build-up, climax, and resolution appropriate for a children's book. The story should be age-appropriate, fun, and easy to understand.
+Choices and Page Descriptions:
+
+Provide three short and simple choices after each story section (except the last). These choices should be logical and engaging.
+Create a one to two sentence description for each page that captures the essence of that part of the story, regardless of the choice made.
+Ensure that while the choices seem different, they all lead to a similar general outcome or theme in the next page's description.
+
+Output Structure:
+The structure for each page should be in the following JSON format:
+jsonCopy{
+    "Title": "title of book",
+    "page": 1,
+    "story": "page 1 story content",
+    "choices": [
+        {
+            "choice1": "choice 1 text with (emoji)",
+            "emoji": "the emoji used in choice 1"
+        },
+        {
+            "choice2": "choice 2 text with (emoji)",
+            "emoji": "the emoji used in choice 2"
+        },
+        {
+            "choice3": "choice 3 text with (emoji)",
+            "emoji": "the emoji used in choice 3"
+        }
+    ],
+    "pageDescriptions": [
+        "1. Brief description of page 1, capturing the essence regardless of choices",
+        "2. Brief description of page 2, showing how all choices lead to a similar theme",
+        "3. Brief description of page 3",
+        "4. Brief description of page 4",
+        "5. Brief description of page 5"
+    ]
+}
+Storytelling Principles: ${principles}
+ReadingLevel Instructions: ${readingLevelInstructions}
+Language Instructions: ${languageInstructions}
+Additional Instructions:
+
+Ensure that the story follows a typical children's book structure and reaches a satisfying conclusion by the ${numberOfPages} page.
+The stories should be unique and imaginative, providing a delightful experience for young readers.
+Make sure to only output the first page first so the user can make a choice that will affect the second page.
+Add relevant emojis to each choice so the user can easily identify them.
+In the "pageDescriptions" array, provide brief descriptions for all ${numberOfPages} pages upfront. These descriptions should be general enough to accommodate any choice from the previous page while maintaining story coherence.
+When creating choices, ensure that while they seem different, they all plausibly lead to the next page's general description.
+
+Example of Choices Leading to Similar Outcomes:
+Page 1 Description: "Halloween night in a spooky town"
+Choices:
+
+Visit the graveyard 👻
+Explore the haunted house 🏚️
+Wander through the pumpkin patch 🎃
+
+Page 2 Description: "Encounter with a friendly ghost"
+In this example, regardless of which choice is made on Page 1, the story on Page 2 involves meeting a ghost, maintaining coherence while allowing for player choice.`;
             return storyPrompt
     }
     
@@ -275,3 +296,4 @@ const themes = ["A lonely cloud befriends a lost kite and helps it find its way 
         Remember to craft your prompt in a way that's clear and descriptive for an image generation AI, focusing on visual elements rather than narrative details. Avoid using direct quotes from the original story text.`
         return imagePrompt
     }
+
