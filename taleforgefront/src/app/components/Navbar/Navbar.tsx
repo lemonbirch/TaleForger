@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import React from 'react'
-
+import AvatarPlaceHolder from '../AvatarPlaceHolder'
 const Navbar = () => {
   return (
 <header className="fixed top-0 left-0 right-0 z-50">
@@ -18,14 +18,15 @@ const Navbar = () => {
         <li><Link href='login'>Login</Link></li>
         <li><Link href="signup">Sign Up</Link></li>
         <li>
-          <details>
+        <AvatarPlaceHolder />
+          {/* <details>
             <summary>Parent</summary>
             <ul className="bg-base-100 rounded-t-none p-2">
               <li><Link href='/buildBook'>Build Book</Link></li>
               <li><a>Library</a></li>
               <li><Link href="signup">Pricing</Link></li>
             </ul>
-          </details>
+          </details> */}
         </li>
       </ul>
     </div>

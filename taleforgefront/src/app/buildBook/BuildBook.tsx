@@ -4,21 +4,14 @@ import InputText from '../components/InputText';
 import DropDown from '../components/Dropdown';
 import { sendFormData } from '../utils/api';
 import { FormData } from '../types/StoryBuilder';
-import RenderDataPage from '../bookpage/RenderDataPage';
-import SquareButton from '../components/SqaureButton';
-import ChoiceCard from '../bookpage/choiceCard';
-import { RenderData } from '../types/renderData';
-import { fetchRenderData } from './FetchData';
 import { useRouter } from 'next/navigation';
-import StoryPage from '../storypage/page';
+import NavButton from '../components/NavButton';
 
 
 const BuildBook = () => {
     const [showAdvanced, setShowAdvanced] = useState(false);
-    const [showBook, setShow] = useState(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const [renderData, setRenderData] = useState<RenderData | null>(null);
   
     const [formData, setFormData] = useState<FormData>({
       characterName: '',
@@ -58,7 +51,7 @@ const BuildBook = () => {
       };
  if (loading === true) {
     return (<div><h1 className="text-3xl font-bold text-center mb-6">Forging Your Story</h1>
-       <p className="text-center mb-6">Please wait a moment while your story is being forged.</p><span className="loading loading-bars loading-xs"></span></div>) 
+       <p className="text-center mb-6">Please wait a moment while your story is being forged.</p><span className="loading loading-bars loading-xs"></span><img src="/bookConstruction.jpg" alt="Forging Your Story" className="mx-auto" /></div>) 
  }
   return (
     <div>
@@ -84,6 +77,7 @@ const BuildBook = () => {
         
         <div className="flex flex-col items-center gap-4">
           <button type="submit" className="btn btn-primary w-full">Create a Story</button>
+          
           <button 
             type="button" 
             className="btn btn-secondary w-full"
@@ -114,7 +108,7 @@ const BuildBook = () => {
               <DropDown 
                 id="pages" 
                 name="Pages" 
-                options={["5", "10", "15"]}
+                options={["2", "5", "10", "15"]}
                 value={formData.pages}
                 onChange={(value) => handleDropdownChange('pages', value)}
               />

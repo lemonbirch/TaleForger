@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { RenderData } from '../types/renderData';  // Adjust the import path as needed
@@ -6,37 +6,25 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface RenderDataPageProps {
   renderData: RenderData | null;
+  imgurls: string[] | null;
 }
 
-const RenderDataPage: React.FC<RenderDataPageProps> = ({ renderData }) => {
+const RenderDataPage: React.FC<RenderDataPageProps> = ({ renderData, imgurls }) => {
   const [pages, setPages] = useState<{ story: string; imageURL: string }[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
-
+  console.log("pages " + JSON.stringify(renderData))
   useEffect(() => {
-    if (renderData && renderData.story && renderData.imageURL) {
-      // Check if this page is already in the array
-      const pageExists = pages.some(
-        page => page.story === renderData.story && page.imageURL === renderData.imageURL
-      );
+    if (renderData && renderData.story && imgurls && imgurls.length > 0) {
+      // Create new pages array based on renderData and imgurls
+      const newPages = imgurls.map((imgurl, index) => ({
+        story: `${renderData.story}`,
+        imageURL: imgurl || "/api/placeholder/400/320"
+      }));
 
-      if (!pageExists) {
-        setPages(prevPages => [
-          ...prevPages,
-          {
-            story: renderData.story,
-            imageURL: renderData.imageURL || "/api/placeholder/400/320"
-          }
-        ]);
-      }
+      setPages(newPages);
+      setCurrentPage(0);  // Start from the first page
     }
-  }, [renderData, pages]);
-
-  useEffect(() => {
-    // Move to the latest page when a new page is added
-    if (pages.length > 0) {
-      setCurrentPage(pages.length - 1);
-    }
-  }, [pages.length]);
+  }, [renderData, imgurls]);
 
   if (pages.length === 0) {
     return <div><span className="loading loading-bars loading-xs"></span></div>;
@@ -53,7 +41,9 @@ const RenderDataPage: React.FC<RenderDataPageProps> = ({ renderData }) => {
       setCurrentPage(currentPage - 1);
     }
   };
-
+  const lastPage = () => {
+  
+  };
   const currentPageData = pages[currentPage];
 
   if (!currentPageData) {
@@ -68,10 +58,9 @@ const RenderDataPage: React.FC<RenderDataPageProps> = ({ renderData }) => {
           <div className="p-4 flex-grow overflow-y-auto">
             <h1 className="text-2xl font-bold mb-2 text-center text-gray-800">{renderData?.title}</h1>
             <p className="text-base font-schoolbell text-gray-700 mb-2 leading-relaxed">
-              {currentPageData.story}
+              {currentPageData.story} 
             </p>
           </div>
-      
           <div className="flex justify-between items-center p-2 bg-gray-100">
             <button 
               onClick={prevPage} 

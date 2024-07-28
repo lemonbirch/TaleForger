@@ -134,7 +134,7 @@ In this example, regardless of which choice is made on Page 1, the story on Page
     
       
     export function continueStory(choice, storyList) {
-        const newPrompt = "The user chose option " + choice + " in " + storyList[storyList.length -1] + " Continue the story based on the option chosen. For reference, here is the entire story so far, along with the original prompt:" + storyList
+        const newPrompt = "The user chose option " + choice + " in " + storyList[storyList.length -1] + " If the option is invalid or undefined revert to option 1 (only ever output the json even if there is an error), Continue the story based on the option chosen. For reference, here is the entire story so far, along with the original prompt:" + storyList
         return newPrompt
     }
     
@@ -174,60 +174,16 @@ In this example, regardless of which choice is made on Page 1, the story on Page
         const readingLevelInstructions = `The reading level is set to ${readingLevel} only respond with this reading level`
         let principles;
         console.log("outside function" + numberOfPages)
-        if (numberOfPages === "5") { 
+        if (numberOfPages === "2") { 
             console.log("within function" + numberOfPages)
     
             principles = `Page 1: 
             story: Start the story, introducing the main character and setting the scene.
             choices: Provide three choices that determine the next part of the story.
         Page 2: 
-            story: Continue the story based on the choice from Page 1, building up the plot.
-            choices: Provide three choices that determine the next part of the story.
-        Page 3: 
-            story: Further develop the story or introduce a climax based on the choice from Page 2.
-            choices: Provide three choices that determine the next part of the story.
-        Page 4: 
-            story: Move towards resolving the story based on the choice from Page 3.
-            choices: Provide three choices that determine the next part of the story.
-        Page 5: 
-            story: Conclude the story with a satisfying ending based on the choice from Page 4.
-            choices: The end`
-        } else if (numberOfPages === "10") {
-            console.log("within function" + numberOfPages)
-    
-            principles = `Page 1: 
-        story: Start the story, introducing the main character and setting the scene.
-        choices: Provide three choices that determine the next part of the story.
-    Page 2: 
-        story: Continue the story based on the choice from Page 1, building up the plot.
-        choices: Provide three choices that determine the next part of the story.
-    Page 3: 
-        story: Further develop the story based on the choice from Page 2.
-        choices: Provide three choices that determine the next part of the story.
-    Page 4: 
-        story: Move towards resolving the story based on the choice from Page 3.
-        choices: Provide three choices that determine the next part of the story.
-    Page 5: 
-        story: Conclude the story with a satisfying ending based on the choice from Page 4.
-        choices: The end
-    Page 6: 
-        story: Continue the story based on the choice from Page 5, introducing new developments.
-        choices: Provide three choices that determine the next part of the story.
-    Page 7: 
-        story: Develop the story further based on the choice from Page 6.
-        choices: Provide three choices that determine the next part of the story.
-    Page 8: 
-        story: Progress towards resolving the story based on the choice from Page 7.
-        choices: Provide three choices that determine the next part of the story.
-    Page 9: 
-        story: Continue towards the conclusion based on the choice from Page 8.
-        choices: Provide three choices that determine the next part of the story.
-    Page 10: 
-        story: Conclude the story with a satisfying ending based on the choice from Page 9.
-        choices: The end
-    
-    `
-        } else  {
+            story: Continue the story based on the choice from Page 1, building up the plot and conclude.
+            choices: Provide three choices that determine the next part of the story.`
+        } else if (numberOfPages === "15") {
             console.log("within function" + numberOfPages)
     
             principles = `Page 1: 
@@ -277,6 +233,61 @@ In this example, regardless of which choice is made on Page 1, the story on Page
         choices: The end
     `
         }
+        
+        else if (numberOfPages === "10") {
+            console.log("within function" + numberOfPages)
+    
+            principles = `Page 1: 
+        story: Start the story, introducing the main character and setting the scene.
+        choices: Provide three choices that determine the next part of the story.
+    Page 2: 
+        story: Continue the story based on the choice from Page 1, building up the plot.
+        choices: Provide three choices that determine the next part of the story.
+    Page 3: 
+        story: Further develop the story based on the choice from Page 2.
+        choices: Provide three choices that determine the next part of the story.
+    Page 4: 
+        story: Move towards resolving the story based on the choice from Page 3.
+        choices: Provide three choices that determine the next part of the story.
+    Page 5: 
+        story: Conclude the story with a satisfying ending based on the choice from Page 4.
+        choices: The end
+    Page 6: 
+        story: Continue the story based on the choice from Page 5, introducing new developments.
+        choices: Provide three choices that determine the next part of the story.
+    Page 7: 
+        story: Develop the story further based on the choice from Page 6.
+        choices: Provide three choices that determine the next part of the story.
+    Page 8: 
+        story: Progress towards resolving the story based on the choice from Page 7.
+        choices: Provide three choices that determine the next part of the story.
+    Page 9: 
+        story: Continue towards the conclusion based on the choice from Page 8.
+        choices: Provide three choices that determine the next part of the story.
+    Page 10: 
+        story: Conclude the story with a satisfying ending based on the choice from Page 9.
+        choices: The end
+    
+    `
+        }  else { 
+            console.log("within function" + numberOfPages)
+    
+            principles = `Page 1: 
+            story: Start the story, introducing the main character and setting the scene.
+            choices: Provide three choices that determine the next part of the story.
+        Page 2: 
+            story: Continue the story based on the choice from Page 1, building up the plot.
+            choices: Provide three choices that determine the next part of the story.
+        Page 3: 
+            story: Further develop the story or introduce a climax based on the choice from Page 2.
+            choices: Provide three choices that determine the next part of the story.
+        Page 4: 
+            story: Move towards resolving the story based on the choice from Page 3.
+            choices: Provide three choices that determine the next part of the story.
+        Page 5: 
+            story: Conclude the story with a satisfying ending based on the choice from Page 4.
+            choices: The end`
+        } 
         const completedPrompt = buildStory(characterName, storyTheme, principles, readingLevelInstructions, languageInstructions, numberOfPages)
         return completedPrompt 
     }

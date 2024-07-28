@@ -1,94 +1,119 @@
+// server.js
 import dotenv from "dotenv";
 import express from 'express';
 import bodyParser from 'body-parser';
-import cors from 'cors'; // Import CORS middleware
+import cors from 'cors';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import OpenAI from "openai";
 import * as saveImage from "./image.js";
 import * as storyModule from "./prompt.js";
 
+dotenv.config();
+const GEMINI_KEY = process.env.GEMINI_KEY;
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+
+if (!GEMINI_KEY || !OPENAI_API_KEY) {
+  throw new Error('Missing GEMINI_KEY or OPENAI_API_KEY in environment variables');
+}
+
 const app = express();
 const port = 3001;
 
 app.use(bodyParser.json());
-app.use(cors()); // Use CORS middleware
-
-dotenv.config(); 
-const GEMINI_KEY = process.env.GEMINI_KEY;
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+app.use(cors());
 
 const genAI = new GoogleGenerativeAI(GEMINI_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 const openai = new OpenAI(OPENAI_API_KEY);
+
 let latestRenderData = null;
+let imgurls = [];
 let storyList = [];
-let artstyle = " ";
+let artstyle = "";
 
 app.post('/api/submitFormData', async (req, res) => {
   const formData = req.body;
   console.log('Received form data:', formData);
 
-  storyList = [];
-  const { characterName, storyTheme, readingLevel, language, pages, artStyle } = formData;
-  artstyle = artStyle;
+  if (!formData.characterName || !formData.storyTheme || !formData.readingLevel || !formData.language || !formData.pages || !formData.artStyle) {
+    return res.status(400).json({ error: 'Missing required form data' });
+  }
 
-  const prompt = storyModule.formatInstructions(characterName, storyTheme, readingLevel, language, pages);
-  // console.log("this is the completed prompt" + prompt)
+  storyList = [];
+  imgurls = [];
+  artstyle = formData.artStyle;
+  const pages = formData.pages;
+  const prompt = storyModule.formatInstructions(formData.characterName, formData.storyTheme, formData.readingLevel, formData.language, pages);
   storyList.push(prompt);
 
   try {
-    const renderData = await createContent(prompt);
-    latestRenderData = renderData; // Store it for later retrieval
-    // console.log("This is the render data:", renderData);
+    const renderData = await createContent(prompt, pages);
+    latestRenderData = renderData;
     res.status(200).json(renderData);
   } catch (error) {
     console.error('Error in createContent:', error);
     res.status(500).json({ error: 'An error occurred while processing your request' });
   }
 });
-
 
 app.post('/api/sendChoice', async (req, res) => {
-  const choice = req.body;
-  // console.log('Received choice:', choice);
-  const newChoicePrompt = storyModule.continueStory(choice, storyList);
-  // console.log("this is the new choice prompt" + newChoicePrompt);
+  let { value: choice } = req.body;
+
+  if (!choice) {
+    return res.status(400).json({ error: 'Missing choice value' });
+  }
+
   try {
-    console.log(newChoicePrompt)
-    const renderData = await createContent(newChoicePrompt);
-    latestRenderData = renderData; // Store it for later retrieval
-    // console.log("This is the render data:", renderData);
+    const renderData = await createNextPage(storyList.length, choice);
+    console.log("this is the latest render data: " + renderData)
+    latestRenderData = renderData;
     res.status(200).json(renderData);
   } catch (error) {
-    console.error('Error in createContent:', error);
+    console.error('Error in createNextPage:', error);
     res.status(500).json({ error: 'An error occurred while processing your request' });
   }
 });
-
-
-
-
 
 app.get('/api/getRenderData', (req, res) => {
   if (latestRenderData) {
-    res.status(200).json(latestRenderData);
+    res.status(200).json({ renderData: latestRenderData, imgurls });
   } else {
     res.status(404).json({ error: 'No render data available' });
   }
 });
 
-async function createContent(prompt) {
-  try {
-    const content = await generateAndSaveContent(prompt);
-    // const imageURL = await generateAndSaveImage(content);
-    console.log("this is the content" + content)
-    const renderData = prepareRenderData(content, "https://picsum.photos/200");
-    console.log(renderData);
+async function createContent(prompt, pages) {
+  const content = await generateAndSaveContent(prompt);
+  await generateAllImages(content, pages);
+  return prepareRenderData(content, imgurls[0]);
+}
 
-    return renderData; // Return the render data
-  } catch (error) {
-    console.error('Error in createContent:', error);
-    throw error; // Rethrow the error to be caught in the parent try-catch block
+
+async function createNextPage(pages, choice) {
+  const newPrompt = storyModule.continueStory(choice, storyList);
+  const content = await generateAndSaveContent(newPrompt);
+  console.log("this is the content " + content)
+  return prepareRenderData(content, imgurls[0]);
+}
+
+async function generateAllImages(content, pages) {
+  let imagePrompts = [];
+  for (let i = 0; i < pages; i++) {
+    const createImagePrompt = storyModule.createImagePrompt(content, artstyle);
+    imagePrompts.push(createImagePrompt);
+  }
+
+  imgurls = [];
+  for (let i = 0; i < pages; i++) {
+    try {
+      const imageURL = await generateImage(imagePrompts[i]);
+      imgurls.push(imageURL);
+      const imageName = `image_${Date.now()}_${i}.png`;
+      await saveImage.saveDALLEImage(imageURL, imageName);
+    } catch (error) {
+      console.error('Failed to generate or save image:', error);
+      imgurls.push("https://via.placeholder.com/200x300?text");
+    }
   }
 }
 
@@ -98,69 +123,14 @@ async function generateAndSaveContent(prompt) {
   return content;
 }
 
-async function generateAndSaveImage(content) {
-  const createImagePrompt = storyModule.createImagePrompt(content, artstyle);
-  
-  const imagePrompt = await generateContent(createImagePrompt);
-  // console.log("this is the image prompt" + imagePrompt);
-  const imageURL = "https://oaidalleapiprodscus.blob.core.windows.net/private/org-wu5GqWI8J6SGzX7Vz6q7H81Z/user-WcbDz9fVXoEqb6nusJxTAS7O/img-BJau26krbbyhbQ2csBgg7e5Q.png?st=2024-07-20T03%3A06%3A48Z&se=2024-07-20T05%3A06%3A48Z&sp=r&sv=2023-11-03&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-07-19T23%3A14%3A36Z&ske=2024-07-20T23%3A14%3A36Z&sks=b&skv=2023-11-03&sig=nJ10IKuGgOrf23f%2BdE4bYjTUCBTzuOgoODR%2BrrfNwEE%3D"
-  // await generateImage(imagePrompt);
-  const imageName = `image_${Date.now()}.png`;
-
-  try {
-    const filePath = await saveImage.saveDALLEImage(imageURL, imageName);
-    console.log("image temporarily disabled")
-    console.log('Image saved at:', filePath);
-  } catch (error) {
-    console.error('Failed to save image:', error);
-  }
-
-  return imageURL;
-}
-
-
-async function generateAllImages(content) {
-  imagePrompts = []
-  for (i=0; i<pages.length; i++) {
-    const createImagePrompt = storyModule.createImagePrompt(content, artstyle);
-    imagePrompt.push(createImagePrompt)
-  }
-
-  var imageURLS = []
-  const imagePrompt = await generateContent(createImagePrompt);
-  for (i=0; i<pages.length; i++) {
-    await generateImage(imagePrompts[i]);
-    imageURLS.push()
-  }
-  
-  // console.log("this is the image prompt" + imagePrompt);
-  const imageURL = "https://oaidalleapiprodscus.blob.core.windows.net/private/org-wu5GqWI8J6SGzX7Vz6q7H81Z/user-WcbDz9fVXoEqb6nusJxTAS7O/img-BJau26krbbyhbQ2csBgg7e5Q.png?st=2024-07-20T03%3A06%3A48Z&se=2024-07-20T05%3A06%3A48Z&sp=r&sv=2023-11-03&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-07-19T23%3A14%3A36Z&ske=2024-07-20T23%3A14%3A36Z&sks=b&skv=2023-11-03&sig=nJ10IKuGgOrf23f%2BdE4bYjTUCBTzuOgoODR%2BrrfNwEE%3D"
-  // await generateImage(imagePrompt);
-  const imageName = `image_${Date.now()}.png`;
-
-  try {
-    const filePath = await saveImage.saveDALLEImage(imageURL, imageName);
-    console.log("image temporarily disabled")
-    console.log('Image saved at:', filePath);
-  } catch (error) {
-    console.error('Failed to save image:', error);
-  }
-
-  return imageURL;
-}
-
-
-
-
 async function generateContent(prompt) {
   try {
     const result = await model.generateContent(prompt);
     const response = await result.response;
-    const text = await response.text();
-    return text;
+    return await response.text();
   } catch (error) {
     console.error("Error generating content:", error);
-    throw error; // Rethrow the error to be caught in the parent try-catch block
+    throw error;
   }
 }
 
@@ -172,18 +142,17 @@ async function generateImage(imagePrompt) {
       n: 1,
       size: "1024x1024"
     });
-    // console.log(image.data);
     return image.data[0].url;
   } catch (error) {
     console.error("Error generating image:", error);
-    throw error; // Rethrow the error to be caught in the parent try-catch block
+    throw error;
   }
 }
 
 function prepareRenderData(content, imageURL) {
   const responseJSON = formatJSON(content);
   if (typeof responseJSON === 'string') {
-    throw new Error(responseJSON); // If formatJSON returns an error message, throw it
+    throw new Error(responseJSON);
   }
   return {
     title: responseJSON.Title,
@@ -191,24 +160,18 @@ function prepareRenderData(content, imageURL) {
     choice1: responseJSON.choices[0]?.choice1 || 'N/A',
     choice2: responseJSON.choices[1]?.choice2 || 'N/A',
     choice3: responseJSON.choices[2]?.choice3 || 'N/A',
-    imageURL: imageURL
+    imageURL
   };
 }
 
 function formatJSON(input) {
-  let jsonString = input;
-
-  // Remove ```json and ``` if present
+  console.log("this is the input: " + input)
+  let jsonString = input.trim();
   jsonString = jsonString.replace(/^```json\s*/, '').replace(/\s*```$/, '');
-
-  // Try to parse the JSON
   try {
-    const parsedJSON = JSON.parse(jsonString);
-
-    // Return the formatted JSON string
-    return parsedJSON;
+    return JSON.parse(jsonString);
   } catch (error) {
-    // If parsing fails, return an error message
+    console.error("Error in formatJSON: Invalid JSON input", error);
     return `Error: Invalid JSON input. ${error.message}`;
   }
 }
