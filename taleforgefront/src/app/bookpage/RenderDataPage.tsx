@@ -14,14 +14,15 @@ const RenderDataPage: React.FC<RenderDataPageProps> = ({ renderData, imgurls }) 
   useEffect(() => {
     if (renderData && renderData.story && imgurls && imgurls.length > 0) {
       setPages(prevPages => {
-        const newPageIndex = prevPages.length;
-        if (newPageIndex < imgurls.length) {
-          const newPage = {
+        const newPageIndex = prevPages.findIndex(page => page.story === renderData.story);
+        if (newPageIndex === -1) {
+          // If this story doesn't exist, add it as a new page
+          return [...prevPages, {
             story: renderData.story,
-            imageURL: imgurls[newPageIndex]
-          };
-          return [...prevPages, newPage];
+            imageURL: imgurls[prevPages.length % imgurls.length]
+          }];
         }
+        // If the story already exists, don't add a new page
         return prevPages;
       });
     }
@@ -99,10 +100,6 @@ const RenderDataPage: React.FC<RenderDataPageProps> = ({ renderData, imgurls }) 
       </div>
     </div>
   );
-  
-  
-  
-    
 };
 
 export default RenderDataPage;
