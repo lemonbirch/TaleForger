@@ -25,6 +25,7 @@ const LoginForm = () => {
       sessionStorage.setItem('user', JSON.stringify(true));
       setPassword('')
       setEmail('')
+      console.log('User display name:', result.user.displayName);
       router.push('/')
     } catch (error) {
       console.error('Error signing in:', error)

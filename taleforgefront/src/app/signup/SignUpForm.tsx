@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react'
 import InputText from '../components/InputText'
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth'
 import { auth } from '@/app/firebase/config'
+import { updateProfile } from "firebase/auth";
 
 const SignUpForm = () => {
   const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth)
@@ -43,9 +44,21 @@ const SignUpForm = () => {
     }
 
     try {
-      await createUserWithEmailAndPassword(email, password)
+      const result = await createUserWithEmailAndPassword(email, password)
+      if (result && result.user) {
+        // User signed up successfully
+        const user = result.user;
+    
+        // Update the user's profile with the username
+        await updateProfile(user, {
+          displayName: username
+        });
+        console.log('User display name:', result.user.displayName);
+
+        console.log('User profile updated with display name:', username)
+      }
     } catch (error) {
-      console.error(error)
+      console.error("Error during sign up:", error)
     }
 
     console.log('Form submitted with:', { username, email, password, confirmPassword })

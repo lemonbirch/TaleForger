@@ -1,8 +1,19 @@
+'use client'
 import React from 'react';
 import { Link } from 'lucide-react';
 import NavButton from './NavButton';
 import Modal from './ModalFunction';
+
+
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from '@/app/firebase/config'
+
+
 const HeroSection = () => {
+  const [user] = useAuthState(auth);
+  const userSession = sessionStorage.getItem('user');
+  console.log("userSession", userSession);
+  console.log("user", user);
   return (
     <section className="bg-base-100 rounded-box shadow-xl mb-16 p-8">
       <div className="hero">
@@ -15,7 +26,7 @@ const HeroSection = () => {
             <NavButton type="button" content="Get Started" path="/buildBook" />
             
           </div>
-          <Modal/>
+     
         </div>
       </div>
     </section>

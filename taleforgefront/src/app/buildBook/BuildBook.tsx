@@ -30,8 +30,14 @@ const BuildBook = () => {
       const handleDropdownChange = (id: string, value: string) => {
         setFormData((prev) => ({ ...prev, [id]: value }));
       };
-    
+      const showModal = () => {
+        const modal = document.getElementById('my_modal_2')
+        if (modal instanceof HTMLDialogElement) {
+            modal.showModal()
+        }
+    };
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
         e.preventDefault();
         try {
           setLoading(true);
@@ -115,7 +121,7 @@ const BuildBook = () => {
               <DropDown 
                 id="artStyle" 
                 name="Art Style" 
-                options={["WaterColor", "Cartoon", "Collage Art"]}
+                options={["WaterColor", "Cartoon", "Collage Art", "abstract", "fantasy", "simple"]}
                 value={formData.artStyle}
                 onChange={(value) => handleDropdownChange('artStyle', value)}
               />
