@@ -26,8 +26,9 @@ export default function RootLayout({
     <html lang="en" data-theme="dracula">
       <body className={`${inter.className} ${schoolbell}`}>
         <Navbar />
-        <BottomNavbar />
+        
         {children}
+        <BottomNavbar />
       </body>
     </html>
   );

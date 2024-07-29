@@ -1,11 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
-import HeroSection from "./components/heroSection";
+import HeroSection from "./components/HeroSection";
 import HowItWorks from "./components/HowItWorks";
 import FeatureGrid from "./components/FeatureGrid";
 import AboutUs from "./components/AboutUs";
 import TestimonialCarasousel from "./components/TestimonialCarasousel";
 import ContactInfo from "./components/ContactInfo";
+import SignUpForm from "./signup/SignUpForm";
+import LoginForm from "./login/LoginForm";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from '@/app/firebase/config'
+import { useRouter } from "next/navigation";
+import { signOut } from 'firebase/auth'
 import React from "react";
 export default function Home() {
   return (

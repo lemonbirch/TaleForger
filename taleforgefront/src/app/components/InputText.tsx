@@ -2,7 +2,14 @@
 import React from 'react'
 
 
-const InputText = ({ id, label, type, placeholder, value, onChange }) => {
+const InputText = ({ id, label, type, placeholder, value, onChange }: {
+  id: string
+  label: string
+  type: string
+  placeholder: string
+  value: string
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+}) => {
   return (
       <div className="mb-4">
           <label htmlFor={id} className="block text-sm font-medium mb-1">

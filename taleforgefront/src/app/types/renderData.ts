@@ -1,5 +1,5 @@
 export interface RenderData {
-    Title: string; 
+    title: string; 
     story: string;
     choice1: string;
     choice2: string;
