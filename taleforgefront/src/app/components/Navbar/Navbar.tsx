@@ -4,6 +4,8 @@ import SignInDrawer from '../SignInDrawer';
 import ThemeController from '../ThemeController';
 
 const Navbar = () => {
+  console.log("navbar")
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       <div className="navbar bg-base-100 px-10"> 

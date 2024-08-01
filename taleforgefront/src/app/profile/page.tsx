@@ -49,25 +49,24 @@ const UserProfilePage = () => {
       <div className="min-h-screen bg-base-200 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-bold mb-4">User Profile</h1>
-          <p className="text-lg">Please log in to view your profile.</p>
+          <p className="text-lg mb-4">Please log in to view your profile.</p>
           <NavButton type="button" content="Log In" path="/login" />
-
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-base-200 pt-16 pb-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-base-200 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-8">User Profile</h1>
+        <h1 className="text-4xl font-bold text-center mb-8 text-primary">User Profile</h1>
         
         <div className="bg-white shadow-xl rounded-lg overflow-hidden mb-8">
           <div className="bg-primary p-6">
             <h2 className="text-2xl font-bold text-primary-content">Personal Information</h2>
           </div>
-          <div className="p-6">
-            <div className="mb-6">
+          <div className="p-6 space-y-6">
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Display Name
               </label>
@@ -98,13 +97,13 @@ const UserProfilePage = () => {
                 </div>
               )}
             </div>
-            <div className="mb-6">
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Email
               </label>
               <span className="text-lg text-gray-900">{user.email}</span>
             </div>
-            <div className="mb-6">
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Account Created
               </label>
@@ -137,7 +136,7 @@ const UserProfilePage = () => {
         )}
 
         <div className="text-center">
-          <button onClick={handleLogout} className="btn btn-error">Log Out</button>
+          <button onClick={handleLogout} className="btn btn-error btn-wide">Log Out</button>
         </div>
       </div>
     </div>

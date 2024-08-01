@@ -8,6 +8,7 @@ const AboutUs = () => {
       <p className="text-lg text-center max-w-3xl mx-auto">
         StoryBuilder for Kids is dedicated to fostering creativity and literacy in children through innovative storytelling tools. Our mission is to provide a safe and engaging platform where kids can express themselves and develop a love for stories. Join us on this exciting journey and help your child become the author of their own adventures!
       </p>
+     
     </div>
   </section>
   )

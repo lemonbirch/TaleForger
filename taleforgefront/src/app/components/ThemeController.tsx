@@ -55,6 +55,15 @@ const ThemeController = () => {
             value="aqua" />
         
         </li>
+        <li>
+          <input
+            type="radio"
+            name="theme-dropdown"
+            className="theme-controller btn btn-sm btn-ghost"
+            aria-label="Pastel"
+            value="pastel" />
+        
+        </li>
       </ul>
     </div>
   );
