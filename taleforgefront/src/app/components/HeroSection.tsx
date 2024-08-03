@@ -10,10 +10,7 @@ import { auth } from '@/app/firebase/config'
 
 
 const HeroSection = () => {
-  const [user] = useAuthState(auth);
-  const userSession = sessionStorage.getItem('user');
-  console.log("userSession", userSession);
-  console.log("user", user);
+
   return (
     <section className="bg-base-100 rounded-box shadow-xl mb-16 p-8">
       <div className="hero">

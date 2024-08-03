@@ -5,7 +5,7 @@ import { auth } from '@/app/firebase/config';
 import NavButton from '../components/NavButton';
 
 const UserProfilePage = () => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   const [displayName, setDisplayName] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState('');
@@ -90,7 +90,7 @@ const UserProfilePage = () => {
                   <span className="text-lg text-gray-900">{displayName || 'Not set'}</span>
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="btn btn-ghost btn-sm"
+                    className="btn  btn-sm"
                   >
                     Edit
                   </button>

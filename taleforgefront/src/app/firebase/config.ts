@@ -1,6 +1,9 @@
 import dotenv from "dotenv";
 import { getApps, initializeApp, getApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, GoogleAuthProvider  } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
+
 dotenv.config();
 
 const firebaseConfig = {
@@ -15,6 +18,9 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
-const auth = getAuth(app);
+const auth = getAuth(app)
+const db = getFirestore(app);
+const storage = getStorage(app);
+const googleAuthProvider = new GoogleAuthProvider()
 
-export {app, auth};
+export { auth, googleAuthProvider, db, storage }
