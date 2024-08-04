@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { auth } from '@/app/firebase/config';
-
+import { auth } from '../firebase/config';
 const SignInDrawer = () => {
   const [user, setUser] = useState<any>(null);
 

@@ -5,7 +5,7 @@ import { db, storage } from "../firebase/config.js";
 export async function storeBookData(bookTitle, pageDataList, imageFiles) {
   try {
     // Create a new book document
-    const userBooksCollection = collection(db, 'users', 5, 'books');
+    const userBooksCollection = collection(db, 'users', "6", 'books');
     const bookRef = doc(userBooksCollection);
     const bookId = bookRef.id;
 
@@ -17,15 +17,23 @@ export async function storeBookData(bookTitle, pageDataList, imageFiles) {
 
     // Store each page's data and image
     for (let i = 0; i < pageDataList.length; i++) {
-      const pageData = pageDataList[i];
+      const pageText = pageDataList[i];
       const imageFile = imageFiles[i];
 
-      // Store JSON data
+      // Debug log for pageText
+      console.log('Page Text:', pageText);
+
+      // Ensure pageText is a string
+      if (typeof pageText !== 'string') {
+        throw new Error(`Invalid pageText at index ${i}: ${pageText}`);
+      }
+
+      // Store page text
       const pageRef = doc(bookRef, 'pages', (i + 1).toString());
-      await setDoc(pageRef, pageData);
+      await setDoc(pageRef, { text: pageText });
 
       // Upload image to Cloud Storage
-      const imageRef = ref(storage, `${userId}/${bookId}/page_${i + 1}.jpg`);
+      const imageRef = ref(storage, `${"6"}/${bookId}/page_${i + 1}.jpg`);
       await uploadBytes(imageRef, imageFile);
 
       // Get the download URL for the uploaded image
@@ -37,12 +45,13 @@ export async function storeBookData(bookTitle, pageDataList, imageFiles) {
       });
     }
 
-    console.log(`Book '${bookTitle}' stored successfully for user ${5}`);
+    console.log(`Book '${bookTitle}' stored successfully for user ${"6"}`);
   } catch (error) {
     console.error('Error storing book data:', error);
     throw error;
   }
 }
+
 
 // Example usage:
 /*

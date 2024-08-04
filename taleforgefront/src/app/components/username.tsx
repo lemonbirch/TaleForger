@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '@/app/firebase/config';
+import { auth } from '../firebase/config';
 
 const useDisplayName = () => {
   const [displayName, setDisplayName] = useState<string | null>(null);

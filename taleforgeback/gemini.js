@@ -32,6 +32,10 @@ let storyList = [];
 let artstyle = "";
 let pagelist = []; 
 
+const state = {
+  saveCount: 0
+};
+
 app.post('/api/submitFormData', async (req, res) => {
   const formData = req.body;
   console.log('Received form data:', formData);
@@ -44,7 +48,7 @@ app.post('/api/submitFormData', async (req, res) => {
   imgurls = [];
   artstyle = formData.artStyle;
   const pages = formData.pages;
-  let saveCount = pages; 
+  state.saveCount = formData.pages;
   const prompt = storyModule.formatInstructions(formData.characterName, formData.storyTheme, formData.readingLevel, formData.language, pages);
   storyList.push(prompt);
 
@@ -139,13 +143,19 @@ async function generateContent(prompt) {
 
 async function generateImage(imagePrompt) {
   try {
-    const image = await openai.images.generate({
+    const image =  await openai.images.generate({
       model: "dall-e-3",
       prompt: imagePrompt,
       n: 1,
       size: "1024x1024"
     });
+
+    // "https://picsum.photos/200/300" for use in not generating images
+    
+    
+   
     return image.data[0].url;
+    
   } catch (error) {
     console.error("Error generating image:", error);
     throw error;
@@ -179,14 +189,15 @@ function formatJSON(input) {
     return `Error: Invalid JSON input. ${error.message}`;
   }
 }
-function saveBook(title, story, images ) { 
-  if (saveCount > 0) {
+function saveBook(title, story, images) { 
+  if (state.saveCount > 0) {
     pagelist.push(story);
-    saveCount -= 1;  
+    state.saveCount -= 1;  
+    console.log("Saving page " + story);
   } else {
-    storeBookData(title, story, images); 
+    console.log("Saving the book..." + story);
+    storeBookData(title, pagelist, images); 
   }
-  
 }
 
 
