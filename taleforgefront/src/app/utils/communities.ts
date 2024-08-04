@@ -1,7 +1,7 @@
 // pages/api/communities.ts
 
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getCommunities } from '../lib/MockDatabase';
+import { getCommunities } from '../lib/mockDatabase';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {

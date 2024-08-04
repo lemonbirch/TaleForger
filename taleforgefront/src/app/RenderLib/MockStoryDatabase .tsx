@@ -1,4 +1,4 @@
-// File: mockStoryDatabase.ts (place this in the same directory as your pages)
+// File: src/app/mockStoryDatabase.ts
 
 const mockStoryDatabase = [
   {

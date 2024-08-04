@@ -7,7 +7,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import OpenAI from "openai";
 import * as saveImage from "./image.js";
 import * as storyModule from "./prompt.js";
-
+import { storeBookData } from "./lib/storebook.js";
 dotenv.config();
 const GEMINI_KEY = process.env.GEMINI_KEY;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
@@ -30,6 +30,7 @@ let latestRenderData = null;
 let imgurls = [];
 let storyList = [];
 let artstyle = "";
+let pagelist = []; 
 
 app.post('/api/submitFormData', async (req, res) => {
   const formData = req.body;
@@ -43,6 +44,7 @@ app.post('/api/submitFormData', async (req, res) => {
   imgurls = [];
   artstyle = formData.artStyle;
   const pages = formData.pages;
+  let saveCount = pages; 
   const prompt = storyModule.formatInstructions(formData.characterName, formData.storyTheme, formData.readingLevel, formData.language, pages);
   storyList.push(prompt);
 
@@ -126,6 +128,7 @@ async function generateAndSaveContent(prompt) {
 async function generateContent(prompt) {
   try {
     const result = await model.generateContent(prompt);
+    console.log("Generated content:", result);
     const response = await result.response;
     return await response.text();
   } catch (error) {
@@ -154,6 +157,7 @@ function prepareRenderData(content, imageURL) {
   if (typeof responseJSON === 'string') {
     throw new Error(responseJSON);
   }
+  saveBook(responseJSON.Title, responseJSON.story, imageURL); 
   return {
     title: responseJSON.Title,
     story: responseJSON.story,
@@ -175,6 +179,16 @@ function formatJSON(input) {
     return `Error: Invalid JSON input. ${error.message}`;
   }
 }
+function saveBook(title, story, images ) { 
+  if (saveCount > 0) {
+    pagelist.push(story);
+    saveCount -= 1;  
+  } else {
+    storeBookData(title, story, images); 
+  }
+  
+}
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

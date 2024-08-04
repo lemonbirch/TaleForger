@@ -2,12 +2,13 @@
 import React from 'react'
 
 
-const InputText = ({ id, label, type, placeholder, value, onChange }: {
+const InputText = ({ id, label, type, placeholder, value, onBlur, onChange }: {
   id: string
   label: string
   type: string
   placeholder: string
   value: string
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 }) => {
   return (
@@ -22,6 +23,7 @@ const InputText = ({ id, label, type, placeholder, value, onChange }: {
               className="input input-bordered w-full bg-teal-700"
               value={value}
               onChange={onChange}
+              onBlur={onBlur}
           />
       </div>
   )
