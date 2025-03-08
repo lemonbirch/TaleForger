@@ -3,18 +3,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import mockStoryDatabase from './MockStoryDatabase ';
+import { db } from '../firebase/config'; // Adjust the import path as necessary
+import { doc, getDoc } from 'firebase/firestore';
 
 type Page = {
-  page: number;
-  story: string;
-  imageURL: string;
+  text: string;
+  imageUrl: string;
 };
 
 type Book = {
-  id: number;
   title: string;
-  coverImage: string;
+  pageCount: number;
   pages: Page[];
 };
 
@@ -27,8 +26,23 @@ const BookContent: React.FC<BookContentProps> = ({ bookId }) => {
   const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
-    const fetchedBook = mockStoryDatabase.find(b => b.id === parseInt(bookId));
-    setBook(fetchedBook || null);
+    const fetchBook = async () => {
+      try {
+        const bookDocRef = doc(db, 'users', '6', 'books', bookId);
+        const bookDoc = await getDoc(bookDocRef);
+
+        if (bookDoc.exists()) {
+          const bookData = bookDoc.data() as Book;
+          setBook(bookData);
+        } else {
+          console.error('No such book found!');
+        }
+      } catch (error) {
+        console.error('Error fetching book data:', error);
+      }
+    };
+
+    fetchBook();
   }, [bookId]);
 
   if (!book) {
@@ -62,7 +76,7 @@ const BookContent: React.FC<BookContentProps> = ({ bookId }) => {
           <div className="p-6 flex-grow overflow-y-auto">
             <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">{book.title}</h1>
             <p className="text-lg font-schoolbell text-gray-700 mb-4 leading-relaxed">
-              {currentPageData.story}
+              {currentPageData.text}
             </p>
           </div>
           <div className="flex items-center p-4 bg-gray-100">
@@ -75,7 +89,7 @@ const BookContent: React.FC<BookContentProps> = ({ bookId }) => {
         <div className="absolute left-0 top-0 bottom-0 w-2 bg-gray-300 shadow-inner"></div>
         <div className="relative w-full h-full">
           <img 
-            src={currentPageData.imageURL} 
+            src={currentPageData.imageUrl} 
             alt="StoryImage" 
             className="absolute inset-0 w-full h-full object-cover"
           />

@@ -1,4 +1,4 @@
-import { collection, doc, setDoc, updateDoc, addDoc } from 'firebase/firestore';
+import { collection, doc, setDoc, addDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from "../firebase/config.js";
 
@@ -9,11 +9,8 @@ export async function storeBookData(bookTitle, pageDataList, imageFiles) {
     const bookRef = doc(userBooksCollection);
     const bookId = bookRef.id;
 
-    // Store book metadata
-    await setDoc(bookRef, {
-      title: bookTitle,
-      pageCount: pageDataList.length
-    });
+    // Prepare the pages data array
+    const pages = [];
 
     // Store each page's data and image
     for (let i = 0; i < pageDataList.length; i++) {
@@ -28,10 +25,6 @@ export async function storeBookData(bookTitle, pageDataList, imageFiles) {
         throw new Error(`Invalid pageText at index ${i}: ${pageText}`);
       }
 
-      // Store page text
-      const pageRef = doc(bookRef, 'pages', (i + 1).toString());
-      await setDoc(pageRef, { text: pageText });
-
       // Upload image to Cloud Storage
       const imageRef = ref(storage, `${"6"}/${bookId}/page_${i + 1}.jpg`);
       await uploadBytes(imageRef, imageFile);
@@ -39,11 +32,19 @@ export async function storeBookData(bookTitle, pageDataList, imageFiles) {
       // Get the download URL for the uploaded image
       const imageUrl = await getDownloadURL(imageRef);
 
-      // Add image URL to the page document
-      await updateDoc(pageRef, {
+      // Add page data to the pages array
+      pages.push({
+        text: pageText,
         imageUrl: imageUrl
       });
     }
+
+    // Store book metadata and pages data in a single document
+    await setDoc(bookRef, {
+      title: bookTitle,
+      pageCount: pageDataList.length,
+      pages: pages
+    });
 
     console.log(`Book '${bookTitle}' stored successfully for user ${"6"}`);
   } catch (error) {
@@ -51,7 +52,6 @@ export async function storeBookData(bookTitle, pageDataList, imageFiles) {
     throw error;
   }
 }
-
 
 // Example usage:
 /*
@@ -82,4 +82,3 @@ storeBookData(userId, bookTitle, pageDataList, imageFiles)
   .then(() => console.log('Book stored successfully'))
   .catch(error => console.error('Error storing book:', error));
 */
-

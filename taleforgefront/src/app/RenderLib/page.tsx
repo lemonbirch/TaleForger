@@ -11,7 +11,7 @@ const BookPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <BookContent bookId={"1"} />
+      <BookContent bookId={"i2Dr53nAyG0hkNBDnSRS"} />
       
     </div>
   );
